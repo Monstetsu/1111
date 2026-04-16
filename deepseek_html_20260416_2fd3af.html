@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Учусь.РФ — курсы</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border: 1px solid #aaa; }
+        button { background: #0066cc; color: white; border: none; padding: 6px 12px; cursor: pointer; margin: 3px; }
+        button:hover { background: #004499; }
+        input, select, textarea { padding: 5px; margin: 5px 0; border: 1px solid #888; }
+        .menu { background: #ddd; padding: 10px; margin-bottom: 15px; }
+        .menu button { background: #bbb; color: black; }
+        .menu button.active { background: #0066cc; color: white; }
+        .page { display: none; }
+        .error { color: red; }
+        .success { color: green; }
+        .app-item { border: 1px solid #ccc; padding: 10px; margin: 8px 0; background: #fafafa; }
+        .status-new { color: orange; font-weight: bold; }
+        .status-learning { color: blue; font-weight: bold; }
+        .status-completed { color: green; font-weight: bold; }
+        table, th, td { border: 1px solid #999; border-collapse: collapse; padding: 5px; }
+        hr { margin: 15px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📚 Учусь.РФ</h1>
+    <p>Курсы повышения квалификации | Охрана труда | Переподготовка</p>
+    
+    <div style="margin:10px 0">
+        <img src="https://placehold.co/40x25/ff9900/white?text=КПК" style="height:25px;">
+        <img src="https://placehold.co/40x25/d9534f/white?text=ОТ" style="height:25px;">
+        <img src="https://placehold.co/40x25/5bc0be/white?text=ПЕД" style="height:25px;">
+    </div>
+
+    <div class="menu">
+        <button class="nav-btn" data-page="login">Вход</button>
+        <button class="nav-btn" data-page="register">Регистрация</button>
+        <button class="nav-btn" data-page="cabinet">Кабинет</button>
+        <button class="nav-btn" data-page="order">Заявка</button>
+        <button class="nav-btn" data-page="admin">Админ</button>
+    </div>
+
+    <!-- ВХОД -->
+    <div id="login" class="page">
+        <h3>Авторизация</h3>
+        <div id="loginMsg"></div>
+        <input type="text" id="loginName" placeholder="Логин"><br>
+        <input type="password" id="loginPwd" placeholder="Пароль"><br>
+        <button onclick="doLogin()">Войти</button>
+    </div>
+
+    <!-- РЕГИСТРАЦИЯ -->
+    <div id="register" class="page">
+        <h3>Регистрация</h3>
+        <div id="regMsg"></div>
+        <input type="text" id="regLogin" placeholder="Логин (латиница+цифры, >=6)"><br>
+        <input type="password" id="regPass" placeholder="Пароль (>=8)"><br>
+        <input type="text" id="regFio" placeholder="ФИО"><br>
+        <input type="text" id="regPhone" placeholder="Телефон"><br>
+        <input type="email" id="regEmail" placeholder="Email"><br>
+        <button onclick="doRegister()">Зарегистрироваться</button>
+    </div>
+
+    <!-- КАБИНЕТ -->
+    <div id="cabinet" class="page">
+        <h3>Личный кабинет</h3>
+        <div id="userInfo"></div>
+        <h4>Мои заявки</h4>
+        <div id="myApps"></div>
+        <hr>
+        <h4>Отзыв о пройденном курсе</h4>
+        <select id="reviewSelect"></select><br>
+        <textarea id="reviewText" rows="3" cols="50" placeholder="Ваш отзыв"></textarea><br>
+        <button onclick="submitReview()">Отправить отзыв</button>
+        <h4>Мои отзывы</h4>
+        <div id="myReviews"></div>
+    </div>
+
+    <!-- ЗАЯВКА С ВЫБОРОМ КУРСА -->
+    <div id="order" class="page">
+        <h3>Новая заявка на обучение</h3>
+        <div id="orderMsg"></div>
+        <label>Выберите курс:</label><br>
+        <select id="courseSelect">
+            <option value="Курсы повышения квалификации для педагогов">📖 Курсы повышения квалификации для педагогов</option>
+            <option value="Охрана труда для руководителей и специалистов">🛡️ Охрана труда для руководителей и специалистов</option>
+            <option value="Курсы переподготовки (Информационные системы и программирование)">💻 Курсы переподготовки (Информационные системы)</option>
+            <option value="Пожарно-технический минимум">🔥 Пожарно-технический минимум</option>
+            <option value="Дистанционное обучение: Педагогика и психология">🧠 Дистанционное обучение: Педагогика и психология</option>
+        </select><br>
+        <label>Дата начала занятий:</label><br>
+        <input type="date" id="dateStart"><br>
+        <label>Способ оплаты:</label><br>
+        <select id="paymentMethod">
+            <option>Безналичный расчет</option>
+            <option>Банковская карта онлайн</option>
+            <option>Оплата по счету</option>
+        </select><br><br>
+        <button onclick="createOrder()">Отправить заявку</button>
+    </div>
+
+    <!-- АДМИНКА -->
+    <div id="admin" class="page">
+        <h3>Админ-панель</h3>
+        <div id="adminAuthBlock">
+            <input type="text" id="adminUser" placeholder="Admin26"><br>
+            <input type="password" id="adminPass" placeholder="Demo20"><br>
+            <button onclick="adminLogin()">Войти</button>
+        </div>
+        <div id="adminData" style="display:none">
+            <h4>Все заявки</h4>
+            <div id="allApps"></div>
+        </div>
+    </div>
+
+    <!-- ER-диаграмма -->
+    <div style="margin-top:25px; border-top:1px solid #ccc; padding:12px; background:#f9f9f9;">
+        <h4>ER-диаграмма (структура БД)</h4>
+        <table>
+            <tr><th>Таблица</th><th>Поля</th><th>Связь</th></tr>
+            <tr><td>users</td><td>id, login, password, fio, phone, email</td><td>1:N → applications</td></tr>
+            <tr><td>applications</td><td>id, userLogin, course, dateStart, payment, status</td><td>N:1 → users</td></tr>
+            <tr><td>reviews</td><td>id, userLogin, course, text, date</td><td>N:1 → users</td></tr>
+        </table>
+        <p style="font-size:12px;">Статусы: Новая → Идет обучение → Обучение завершено</p>
+    </div>
+</div>
+
+<script>
+    let users = JSON.parse(localStorage.getItem('kurs_users')) || [];
+    let apps = JSON.parse(localStorage.getItem('kurs_apps')) || [];
+    let reviews = JSON.parse(localStorage.getItem('kurs_reviews')) || [];
+
+    function saveAll() {
+        localStorage.setItem('kurs_users', JSON.stringify(users));
+        localStorage.setItem('kurs_apps', JSON.stringify(apps));
+        localStorage.setItem('kurs_reviews', JSON.stringify(reviews));
+    }
+
+    if(users.length === 0) {
+        users.push({ login: 'student', password: 'student123', fio: 'Студент Тестовый', phone: '+79991112233', email: 'student@mail.ru' });
+        apps.push({ id: 101, userLogin: 'student', course: 'Охрана труда для руководителей', dateStart: '2026-05-15', payment: 'Безналичный расчет', status: 'Новая' });
+        apps.push({ id: 102, userLogin: 'student', course: 'Курсы повышения квалификации для педагогов', dateStart: '2026-03-01', payment: 'Карта', status: 'Обучение завершено' });
+        saveAll();
+    }
+
+    let currentUser = sessionStorage.getItem('kurs_current');
+
+    function getCurrent() {
+        if(!currentUser) return null;
+        return users.find(u => u.login === currentUser);
+    }
+
+    function showCabinet() {
+        let user = getCurrent();
+        if(!user) { document.getElementById('userInfo').innerHTML = '<span class="error">Не авторизован</span>'; return; }
+        document.getElementById('userInfo').innerHTML = `<b>${user.fio}</b> (${user.login})<br>${user.phone} | ${user.email}`;
+        
+        let myApps = apps.filter(a => a.userLogin === user.login);
+        let html = '';
+        for(let a of myApps) {
+            let cls = a.status === 'Новая' ? 'status-new' : (a.status === 'Идет обучение' ? 'status-learning' : 'status-completed');
+            html += `<div class="app-item"><b>${a.course}</b><br>📅 ${a.dateStart} | 💳 ${a.payment}<br>Статус: <span class="${cls}">${a.status}</span></div>`;
+        }
+        document.getElementById('myApps').innerHTML = html || '<p>Нет заявок</p>';
+        
+        let completed = myApps.filter(a => a.status === 'Обучение завершено');
+        let select = document.getElementById('reviewSelect');
+        select.innerHTML = '<option value="">-- выберите завершённый курс --</option>';
+        for(let c of completed) select.innerHTML += `<option value="${c.id}">${c.course}</option>`;
+        
+        let myReviews = reviews.filter(r => r.userLogin === user.login);
+        let revHtml = '';
+        for(let r of myReviews) revHtml += `<div class="app-item"><b>${r.course}</b><br>${r.text}</div>`;
+        document.getElementById('myReviews').innerHTML = revHtml || '<p>Нет отзывов</p>';
+    }
+
+    window.doLogin = function() {
+        let login = document.getElementById('loginName').value.trim();
+        let pass = document.getElementById('loginPwd').value.trim();
+        let user = users.find(u => u.login === login && u.password === pass);
+        if(user) {
+            currentUser = login;
+            sessionStorage.setItem('kurs_current', login);
+            document.getElementById('loginMsg').innerHTML = '<span class="success">Успешно!</span>';
+            setTimeout(() => { showPage('cabinet'); showCabinet(); }, 500);
+        } else {
+            document.getElementById('loginMsg').innerHTML = '<span class="error">Неверный логин/пароль</span>';
+        }
+    };
+
+    window.doRegister = function() {
+        let login = document.getElementById('regLogin').value.trim();
+        let pass = document.getElementById('regPass').value.trim();
+        let fio = document.getElementById('regFio').value.trim();
+        let phone = document.getElementById('regPhone').value.trim();
+        let email = document.getElementById('regEmail').value.trim();
+        let msg = document.getElementById('regMsg');
+        if(!login || !pass || !fio || !phone || !email) { msg.innerHTML = '<span class="error">Все поля обязательны</span>'; return; }
+        if(!/^[a-zA-Z0-9]{6,}$/.test(login)) { msg.innerHTML = '<span class="error">Логин: латиница/цифры, >=6 символов</span>'; return; }
+        if(pass.length < 8) { msg.innerHTML = '<span class="error">Пароль >=8 символов</span>'; return; }
+        if(users.find(u => u.login === login)) { msg.innerHTML = '<span class="error">Логин занят</span>'; return; }
+        users.push({ login, password: pass, fio, phone, email });
+        saveAll();
+        msg.innerHTML = '<span class="success">Регистрация успешна! Войдите.</span>';
+        setTimeout(() => showPage('login'), 1200);
+    };
+
+    window.createOrder = function() {
+        let user = getCurrent();
+        if(!user) { document.getElementById('orderMsg').innerHTML = '<span class="error">Сначала войдите</span>'; return; }
+        let course = document.getElementById('courseSelect').value;
+        let dateStart = document.getElementById('dateStart').value;
+        let payment = document.getElementById('paymentMethod').value;
+        if(!dateStart) { document.getElementById('orderMsg').innerHTML = '<span class="error">Укажите дату</span>'; return; }
+        let newId = Date.now();
+        apps.push({ id: newId, userLogin: user.login, course, dateStart, payment, status: 'Новая' });
+        saveAll();
+        document.getElementById('orderMsg').innerHTML = '<span class="success">Заявка отправлена!</span>';
+        setTimeout(() => showPage('cabinet'), 1000);
+    };
+
+    window.submitReview = function() {
+        let user = getCurrent();
+        if(!user) { alert('Войдите'); return; }
+        let appId = document.getElementById('reviewSelect').value;
+        let text = document.getElementById('reviewText').value.trim();
+        if(!appId || !text) { alert('Выберите завершённый курс и напишите отзыв'); return; }
+        let app = apps.find(a => a.id == appId);
+        if(!app || app.status !== 'Обучение завершено') { alert('Отзыв только для завершённого обучения'); return; }
+        reviews.push({ userLogin: user.login, course: app.course, text, date: new Date() });
+        saveAll();
+        document.getElementById('reviewText').value = '';
+        showCabinet();
+        alert('Отзыв сохранён');
+    };
+
+    window.adminLogin = function() {
+        let alog = document.getElementById('adminUser').value;
+        let apass = document.getElementById('adminPass').value;
+        if(alog === 'Admin26' && apass === 'Demo20') {
+            document.getElementById('adminAuthBlock').style.display = 'none';
+            document.getElementById('adminData').style.display = 'block';
+            let all = '';
+            for(let a of apps) {
+                all += `<div class="app-item">
+                    <b>Заявка #${a.id}</b> | ${a.userLogin}<br>
+                    Курс: ${a.course} | ${a.dateStart} | ${a.payment}<br>
+                    Статус: <b>${a.status}</b><br>
+                    <button onclick="changeStatus(${a.id}, 'Новая')">Новая</button>
+                    <button onclick="changeStatus(${a.id}, 'Идет обучение')">Идет обучение</button>
+                    <button onclick="changeStatus(${a.id}, 'Обучение завершено')">Завершено</button>
+                </div>`;
+            }
+            document.getElementById('allApps').innerHTML = all || '<p>Нет заявок</p>';
+        } else { alert('Неверные данные админа'); }
+    };
+
+    window.changeStatus = function(id, newStatus) {
+        let app = apps.find(a => a.id === id);
+        if(app) { app.status = newStatus; saveAll(); adminLogin(); if(getCurrent()) showCabinet(); }
+    };
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.getElementById(pageId).style.display = 'block';
+        document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('active'));
+        let activeBtn = document.querySelector(`.menu button[data-page="${pageId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
+        if(pageId === 'cabinet' && getCurrent()) showCabinet();
+        if(pageId === 'cabinet' && !getCurrent()) { alert('Войдите'); showPage('login'); }
+        if(pageId === 'order' && !getCurrent()) { alert('Войдите'); showPage('login'); }
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => showPage(btn.getAttribute('data-page')));
+    });
+    showPage('login');
+</script>
+</body>
+</html>
